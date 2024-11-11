@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Perspective-projection-console.vcxproj
+/Perspective-projection-console.vcxproj.filters
+/Perspective-projection-console.sln
