@@ -41,16 +41,16 @@ public:
 };
 
 //  3D object class
-class Object : Point_3D
+class Object_3D : Point_3D
 {
 protected:
     double x, y, z;
     std::vector<Point_3D> points;
 public:
-    Object() : x(0), y(0), z(0) {}
-    Object(double x, double y, double z) : x(x), y(y), z(z) {}
-    Object(std::vector<Point_3D> points) : x(0), y(0), z(0), points(points) {}
-    Object(double x, double y, double z, std::vector<Point_3D> points) : x(x), y(y), z(z), points(points) {}
+    Object_3D() : x(0), y(0), z(0) {}
+    Object_3D(double x, double y, double z) : x(x), y(y), z(z) {}
+    Object_3D(std::vector<Point_3D> points) : x(0), y(0), z(0), points(points) {}
+    Object_3D(double x, double y, double z, std::vector<Point_3D> points) : x(x), y(y), z(z), points(points) {}
 
     Point_3D getPosition()
     {
@@ -94,7 +94,7 @@ public:
 };
 
 //  box class
-class Box : Object, Point_3D
+class Box : Point_3D
 {
 private:
     double x, y, z;
@@ -133,5 +133,30 @@ public:
             normPoints.push_back(Point_3D(points[i].x + x, points[i].y + y, points[i].z + z));
         }
         return normPoints;
+    }
+
+    void move(double x, double y, double z)
+    {
+        this->x += x;
+        this->y += y;
+        this->z += z;
+    }
+    void move(Point_3D vector_3d)
+    {
+        x += vector_3d.x;
+        y += vector_3d.y;
+        z += vector_3d.z;
+    }
+    void teleport(double x, double y, double z)
+    {
+        this->x = x;
+        this->y = y;
+        this->z = z;
+    }
+    void teleport(Point_3D vector_3d)
+    {
+        x = vector_3d.x;
+        y = vector_3d.y;
+        z = vector_3d.z;
     }
 };

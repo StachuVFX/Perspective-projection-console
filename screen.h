@@ -10,8 +10,8 @@
 #define PI 3.14159265359
 #define RAD(x) x * PI / 180
 
-#define WIDTH 80
-#define HEIGHT 24
+#define WIDTH 120
+#define HEIGHT 30
 
 //  screen class
 class Screen
@@ -95,19 +95,19 @@ public:
             x = (int)points_2d[i].x + m_width / 2;
             y = m_height - ((int)points_2d[i].y + m_height / 2) - 1;
 
-            LOG("Point(" << points_2d[i].x << ", " << points_2d[i].y <<
+            /*LOG("Point(" << points_2d[i].x << ", " << points_2d[i].y <<
                 ") --> Round_Point(" << (int)points_2d[i].x << ", " << (int)points_2d[i].y <<
-                ") --> Normalized_Point(" << x << ", " << y << ")");
+                ") --> Normalized_Point(" << x << ", " << y << ")");*/
 
             if (x > -1 && x < m_width && y > -1 && y < m_height)
             {
                 screen[y][x] = character;
-                PRINT("\n");
+                //PRINT("\n");
             }
-            else
+            /*else
             {
                 PRINT(" - Point out of bounds!\n");
-            }
+            }*/
         }
     }
     //  project 3d points to 2d and draw them
@@ -123,6 +123,36 @@ public:
             points_2d.push_back(tmp_point_2d);
         }
         draw(points_2d, character);
+    }
+    //  draw all points of objects vector
+    void draw(std::vector<Object_3D>& objects_3d, const char& character)
+    {
+        std::vector<Point_3D> all_points_3d;
+        std::vector<Point_3D> tmp_points_3d;
+        for (int i = 0; i < objects_3d.size(); i++)
+        {
+            tmp_points_3d = objects_3d[i].normalizedPoints();
+            for (int j = 0; j < tmp_points_3d.size(); j++)
+            {
+                all_points_3d.push_back(tmp_points_3d[j]);
+            }
+        }
+        draw(all_points_3d, character);
+    }
+    //  draw all points of box vector
+    void draw(std::vector<Box>& objects_3d, const char& character)
+    {
+        std::vector<Point_3D> all_points_3d;
+        std::vector<Point_3D> tmp_points_3d;
+        for (int i = 0; i < objects_3d.size(); i++)
+        {
+            tmp_points_3d = objects_3d[i].normalizedPoints();
+            for (int j = 0; j < tmp_points_3d.size(); j++)
+            {
+                all_points_3d.push_back(tmp_points_3d[j]);
+            }
+        }
+        draw(all_points_3d, character);
     }
 
     //  display screen

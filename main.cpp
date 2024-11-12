@@ -1,20 +1,29 @@
+#include <Windows.h>
+
 #include "screen.h"
 
-#define PX 20
-#define PY 10
-#define PZ1 1
-#define PZ2 40
-#define H_SHIFT 10
-#define V_SHIFT 2
-#define D_SHIFT 0
+//#define PX 20
+//#define PY 10
+//#define PZ1 1
+//#define PZ2 40
+//#define H_SHIFT 10
+//#define V_SHIFT 2
+//#define D_SHIFT 0
+#define X_MOVE 3
+#define Y_MOVE 1
+#define Z_MOVE 0
+#define X_MOVE_MARG 100
+#define Y_MOVE_MARG 24
+#define Z_MOVE_MARG 10
+#define INTERVAL 200
 
 int main()
 {
     PRINT("My shot at perspective projection of 3D points to a 2D screen\n\n");
 
     //  TODO:
-    // - drawing multiple objects
-    // - game loop + animation
+    // - drawing lines
+    // - optimalize display
     // - threads + keyboard events
     // - absolute coordinates to camera coordinates
 
@@ -23,30 +32,14 @@ int main()
     Horizontal_Line hLine(0);
     Vertical_Line vLine(0);
 
-    // 2D points vector
-    /*std::vector<Point_2D> point_2d_vector = {
-        Point_2D(0, 9),
-        Point_2D(0, -10),
-        Point_2D(19, 0),
-        Point_2D(-20, 0)
-    };*/
-    // 3D points vector
-    /*std::vector<Point_3D> point_3d_vector = {
-        Point_3D(H_SHIFT-PX  ,V_SHIFT-PY  ,     PZ1+D_SHIFT),
-        Point_3D(H_SHIFT+PX-1,V_SHIFT-PY  ,     PZ1+D_SHIFT),
-        Point_3D(H_SHIFT+PX-1,V_SHIFT+PY-1,     PZ1+D_SHIFT),
-        Point_3D(H_SHIFT-PX  ,V_SHIFT+PY-1,     PZ1+D_SHIFT),
-        Point_3D(H_SHIFT-PX  ,V_SHIFT-PY  , PZ1+PZ2+D_SHIFT),
-        Point_3D(H_SHIFT+PX-1,V_SHIFT-PY  , PZ1+PZ2+D_SHIFT),
-        Point_3D(H_SHIFT+PX-1,V_SHIFT+PY-1, PZ1+PZ2+D_SHIFT),
-        Point_3D(H_SHIFT-PX  ,V_SHIFT+PY-1, PZ1+PZ2+D_SHIFT)
-    };*/
     // boxes (x, y, z, width, height, depth)
-    Box box1(0, 0, 30, 30, 16, 30);
-    Box box2(-36, -10, 10, 10, 5, 10);
-    Box box3( 36, -10, 10, 10, 5, 10);
-    Box box4( 36,  10, 10, 10, 5, 10);
-    Box box5(-36,  10, 10, 10, 5, 10);
+    std::vector<Box> boxVector = {
+        Box(0, 0, 30, 20, 10, 30)
+        /*Box(-36, -10, 10, 10, 5, 10),
+        Box( 36, -10, 10, 10, 5, 10),
+        Box( 36,  10, 10, 10, 5, 10),
+        Box(-36,  10, 10, 10, 5, 10)*/
+    };
 
     //      Drawing:
     // screen
@@ -55,17 +48,44 @@ int main()
     //screen.fill('.');
 
     // draw lines
-    screen.draw(hLine, '-');
-    screen.draw(vLine, '|');
-    // draw points
-    //screen.draw(point_2d_vector, 'O');
-    //screen.draw(point_3d_vector, 'o');
-    screen.draw(box1.normalizedPoints(), 'o');
-    screen.draw(box2.normalizedPoints(), 'o');
-    screen.draw(box3.normalizedPoints(), 'o');
-    screen.draw(box4.normalizedPoints(), 'o');
-    screen.draw(box5.normalizedPoints(), 'o');
+    //screen.draw(hLine, '-');
+    //screen.draw(vLine, '|');
+    
+    // draw objects
+    //screen.draw(boxVector, 'o');
 
     // display
-    screen.display();
+    //screen.display();
+    
+    boxVector[0].move(-X_MOVE_MARG / 2, -Y_MOVE_MARG / 2, 0);
+    for (int i = 0, j = 0, k = 0, xMove = X_MOVE, yMove = Y_MOVE, zMove = Z_MOVE; i < 100; i++)
+    {
+        screen.clear();
+
+        // draw lines
+        screen.draw(hLine, '-');
+        screen.draw(vLine, '|');
+
+        // animate objects
+        boxVector[0].move(xMove, yMove, zMove);
+        j++;
+        if (j >= X_MOVE_MARG / X_MOVE)
+        {
+            xMove *= -1;
+            j = 0;
+        }
+        k++;
+        if (k >= Y_MOVE_MARG / Y_MOVE)
+        {
+            yMove *= -1;
+            k = 0;
+        }
+
+        // draw objects
+        screen.draw(boxVector, 'o');
+
+        // display
+        Sleep(INTERVAL);
+        screen.display();
+    }
 }
