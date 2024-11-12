@@ -1,7 +1,8 @@
 #pragma once
 
 #include <iostream>
-#include <vector>
+
+#include "objects.h"
 
 #define PRINT(x) std::cout << x
 #define LOG(x) std::cout << "LOG: " << x
@@ -11,46 +12,6 @@
 
 #define WIDTH 80
 #define HEIGHT 24
-
-//  2D point struct
-struct Point_2D
-{
-public:
-    double x, y;
-public:
-    Point_2D() : x(0), y(0) {}
-    Point_2D(double x, double y) : x(x), y(y) {}
-};
-
-//  3D point struct
-struct Point_3D
-{
-public:
-    double x, y, z;
-public:
-    Point_3D() : x(0), y(0), z(0) {}
-    Point_3D(double x, double y, double z) : x(x), y(y), z(z) {}
-};
-
-//  horizontal line struct
-struct Horizontal_Line
-{
-public:
-    double y;
-public:
-    Horizontal_Line() : y(0) {}
-    Horizontal_Line(double y) : y(y) {}
-};
-
-//  vertical line struct
-struct Vertical_Line
-{
-public:
-    double x;
-public:
-    Vertical_Line() : x(0) {}
-    Vertical_Line(double x) : x(x) {}
-};
 
 //  screen class
 class Screen
@@ -68,18 +29,18 @@ public:
         : m_width(WIDTH), m_height(HEIGHT), fov(90), zV(-m_width)
     {
         LOG("zV: " << zV << "\n");
-        Clear();
+        clear();
     }
     // my formula for zV found using a notebook, a pen, and the trigonometric table
     Screen(const int &width, const int &height, const double &fov)
         : m_width(width), m_height(height), fov(fov), zV(-width / tan(RAD(fov / 2)))
     {
         LOG("zV: " << zV << "\n");
-        Clear();
+        clear();
     }
 
     //  clear the screen
-    void Clear()
+    void clear()
     {
         for (int i = 0; i < m_height; i++)
         {
@@ -91,7 +52,7 @@ public:
     }
 
     //  fill the screen with a character
-    void Fill(const char &character)
+    void fill(const char &character)
     {
         for (int i = 0; i < m_height; i++)
         {
@@ -103,7 +64,7 @@ public:
     }
 
     //  draw a horizontal line
-    void Draw(const Horizontal_Line& line, const char& character)
+    void draw(const Horizontal_Line& line, const char& character)
     {
         int y = m_height - ((int)line.y + m_height / 2) - 1;
         if (y > -1 && y < m_height)
@@ -115,7 +76,7 @@ public:
         }
     }
     //  draw a horizontal line
-    void Draw(const Vertical_Line& line, const char& character)
+    void draw(const Vertical_Line& line, const char& character)
     {
         int x = (int)line.x + m_width / 2;
         if (x > -1 && x < m_width)
@@ -127,7 +88,7 @@ public:
         }
     }
     //  draw normalized 2d points
-    void Draw(const std::vector<Point_2D> &points_2d, const char &character)
+    void draw(const std::vector<Point_2D> &points_2d, const char &character)
     {
         for (int i = 0, x, y; i < points_2d.size(); i++)
         {
@@ -150,7 +111,7 @@ public:
         }
     }
     //  project 3d points to 2d and draw them
-    void Draw(const std::vector<Point_3D> &points_3d, const char &character)
+    void draw(const std::vector<Point_3D> &points_3d, const char &character)
     {
         std::vector<Point_2D> points_2d;
         Point_2D tmp_point_2d;
@@ -161,11 +122,11 @@ public:
             tmp_point_2d.y = (-zV * points_3d[i].y) / (points_3d[i].z - zV);
             points_2d.push_back(tmp_point_2d);
         }
-        Draw(points_2d, character);
+        draw(points_2d, character);
     }
 
     //  display screen
-    void Display()
+    void display()
     {
         PRINT(std::endl);
         for (int i = 0; i < m_height; i++)

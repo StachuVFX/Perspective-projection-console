@@ -13,7 +13,7 @@ int main()
     PRINT("My shot at perspective projection of 3D points to a 2D screen\n\n");
 
     //  TODO:
-    // - objects
+    // - drawing multiple objects
     // - game loop + animation
     // - threads + keyboard events
     // - absolute coordinates to camera coordinates
@@ -31,7 +31,7 @@ int main()
         Point_2D(-20, 0)
     };*/
     // 3D points vector
-    std::vector<Point_3D> point_3d_vector = {
+    /*std::vector<Point_3D> point_3d_vector = {
         Point_3D(H_SHIFT-PX  ,V_SHIFT-PY  ,     PZ1+D_SHIFT),
         Point_3D(H_SHIFT+PX-1,V_SHIFT-PY  ,     PZ1+D_SHIFT),
         Point_3D(H_SHIFT+PX-1,V_SHIFT+PY-1,     PZ1+D_SHIFT),
@@ -40,21 +40,32 @@ int main()
         Point_3D(H_SHIFT+PX-1,V_SHIFT-PY  , PZ1+PZ2+D_SHIFT),
         Point_3D(H_SHIFT+PX-1,V_SHIFT+PY-1, PZ1+PZ2+D_SHIFT),
         Point_3D(H_SHIFT-PX  ,V_SHIFT+PY-1, PZ1+PZ2+D_SHIFT)
-    };
+    };*/
+    // boxes (x, y, z, width, height, depth)
+    Box box1(0, 0, 30, 30, 16, 30);
+    Box box2(-36, -10, 10, 10, 5, 10);
+    Box box3( 36, -10, 10, 10, 5, 10);
+    Box box4( 36,  10, 10, 10, 5, 10);
+    Box box5(-36,  10, 10, 10, 5, 10);
 
     //      Drawing:
     // screen
     Screen screen(WIDTH, HEIGHT, 90);
     // fill
-    //screen.Fill('.');
+    //screen.fill('.');
 
     // draw lines
-    screen.Draw(hLine, '-');
-    screen.Draw(vLine, '|');
+    screen.draw(hLine, '-');
+    screen.draw(vLine, '|');
     // draw points
-    //screen.Draw(point_2d_vector, 'O');
-    screen.Draw(point_3d_vector, 'o');
+    //screen.draw(point_2d_vector, 'O');
+    //screen.draw(point_3d_vector, 'o');
+    screen.draw(box1.normalizedPoints(), 'o');
+    screen.draw(box2.normalizedPoints(), 'o');
+    screen.draw(box3.normalizedPoints(), 'o');
+    screen.draw(box4.normalizedPoints(), 'o');
+    screen.draw(box5.normalizedPoints(), 'o');
 
     // display
-    screen.Display();
+    screen.display();
 }
