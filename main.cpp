@@ -16,16 +16,14 @@
 #define Y_MOVE_MARG 24
 #define Z_MOVE_MARG 10
 #define INTERVAL 100
-#define TIME 100
+#define TIME 1000 / INTERVAL * 10
 
 int main()
 {
     PRINT("My shot at perspective projection of 3D points to a 2D screen\n\n");
 
     //  TODO:
-    // - optimalize display (done)
-    // - drawing lines (done)
-    // - optimalize display even more
+    // - optimalize display even more (done)
     // - threads + keyboard events
     // - absolute coordinates to camera coordinates
 

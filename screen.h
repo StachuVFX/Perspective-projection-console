@@ -215,16 +215,31 @@ public:
     //  display screen line by line as  strings
     void display()
     {
-        PRINT(std::endl);
+        /*PRINT(std::endl);
         for (int i = 0; i < m_height; i++)
         {
             char line[WIDTH + 1];
-            line[WIDTH] = '\0';
+            line[m_width] = '\0';
             for (int j = 0; j < m_width; j++)
             {
                 line[j] = screen[i][j];
             }
             PRINT(line << std::endl);
+        }*/
+
+        char screenText[HEIGHT * (WIDTH + 1)];
+        for (int i = 0; i < m_height - 1; i++)
+        {
+            screenText[i * (m_width + 1) + m_width] = '\n';
         }
+        screenText[m_height * (m_width + 1) - 1] = '\0';
+        for (int i = 0; i < m_height; i++)
+        {
+            for (int j = 0; j < m_width; j++)
+            {
+                screenText[i * (m_width + 1) + j] = screen[i][j];
+            }
+        }
+        PRINT(std::endl << screenText);
     }
 };
