@@ -135,11 +135,11 @@ public:
         this->y = y;
         this->z = z;
     }
-    void teleport(Point_3D vector_3d)
+    void teleport(Point_3D point_3d)
     {
-        x = vector_3d.x;
-        y = vector_3d.y;
-        z = vector_3d.z;
+        x = point_3d.x;
+        y = point_3d.y;
+        z = point_3d.z;
     }
 };
 

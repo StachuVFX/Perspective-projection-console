@@ -30,14 +30,14 @@ private:
     char screen[HEIGHT][WIDTH];
 public:
     Screen()
-        : m_width(WIDTH), m_height(HEIGHT), fov(90), zV(-m_width)
+        : m_width(WIDTH), m_height(HEIGHT), fov(90), zV(-m_width / 2)
     {
         LOG("zV: " << zV << "\n");
         clear();
     }
     // my formula for zV found using a notebook, a pen, and the trigonometric table
     Screen(const int &width, const int &height, const double &fov)
-        : m_width(width), m_height(height), fov(fov), zV(-width / tan(RAD(fov / 2)))
+        : m_width(width), m_height(height), fov(fov), zV(-(width / 2) / tan(RAD(fov / 2)))
     {
         LOG("zV: " << zV << "\n");
         clear();

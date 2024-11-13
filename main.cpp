@@ -12,8 +12,8 @@
 #define X_MOVE 3
 #define Y_MOVE 1
 #define Z_MOVE 0
-#define X_MOVE_MARG 100
-#define Y_MOVE_MARG 24
+#define X_MOVE_MARG 140
+#define Y_MOVE_MARG 28
 #define Z_MOVE_MARG 10
 #define INTERVAL 100
 #define TIME 1000 / INTERVAL * 10
