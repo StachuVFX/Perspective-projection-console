@@ -15,15 +15,17 @@
 #define X_MOVE_MARG 100
 #define Y_MOVE_MARG 24
 #define Z_MOVE_MARG 10
-#define INTERVAL 200
+#define INTERVAL 100
+#define TIME 100
 
 int main()
 {
     PRINT("My shot at perspective projection of 3D points to a 2D screen\n\n");
 
     //  TODO:
-    // - drawing lines
-    // - optimalize display
+    // - optimalize display (done)
+    // - drawing lines (done)
+    // - optimalize display even more
     // - threads + keyboard events
     // - absolute coordinates to camera coordinates
 
@@ -32,34 +34,32 @@ int main()
     Horizontal_Line hLine(0);
     Vertical_Line vLine(0);
 
-    // boxes (x, y, z, width, height, depth)
+    // boxes (width, height, depth, x, y, z, ifLines)
     std::vector<Box> boxVector = {
-        Box(0, 0, 30, 20, 10, 30)
-        /*Box(-36, -10, 10, 10, 5, 10),
-        Box( 36, -10, 10, 10, 5, 10),
-        Box( 36,  10, 10, 10, 5, 10),
-        Box(-36,  10, 10, 10, 5, 10)*/
+        Box(20, 10, 20, 0, 0, 30, true)
+        /*Box(10, 5, 10, -36, -10, 10),
+        Box(10, 5, 10,  36, -10, 10),
+        Box(10, 5, 10,  36,  10, 10),
+        Box(10, 5, 10, -36,  10, 10)*/
     };
+
+    // lines (for debugging)
+    /*std::vector<Line_2D> lineVector = {
+        Line_2D(Point_2D(-20, -10), Point_2D( 20, -10)),
+        Line_2D(Point_2D( 20, -10), Point_2D( 20,  10)),
+        Line_2D(Point_2D( 20,  10), Point_2D(-20,  10)),
+        Line_2D(Point_2D(-20,  10), Point_2D(-20, -10))
+    };*/
 
     //      Drawing:
     // screen
-    Screen screen(WIDTH, HEIGHT, 90);
-    // fill
-    //screen.fill('.');
-
-    // draw lines
-    //screen.draw(hLine, '-');
-    //screen.draw(vLine, '|');
+    Screen screen(WIDTH, HEIGHT, FOV);
     
-    // draw objects
-    //screen.draw(boxVector, 'o');
-
-    // display
-    //screen.display();
-    
+    // game loop
     boxVector[0].move(-X_MOVE_MARG / 2, -Y_MOVE_MARG / 2, 0);
-    for (int i = 0, j = 0, k = 0, xMove = X_MOVE, yMove = Y_MOVE, zMove = Z_MOVE; i < 100; i++)
+    for (int i = 0, j = 0, k = 0, xMove = X_MOVE, yMove = Y_MOVE, zMove = Z_MOVE; i < TIME; i++)
     {
+        // clear the screen
         screen.clear();
 
         // draw lines
@@ -83,6 +83,9 @@ int main()
 
         // draw objects
         screen.draw(boxVector, 'o');
+
+        // debug lines
+        //screen.draw(lineVector, '.');
 
         // display
         Sleep(INTERVAL);
