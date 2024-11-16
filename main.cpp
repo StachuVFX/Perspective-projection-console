@@ -14,18 +14,24 @@
 #define Z_MOVE 0
 #define X_MOVE_MARG 140
 #define Y_MOVE_MARG 28
-#define Z_MOVE_MARG 10
+#define Z_MOVE_M
+//#define X_MOVE_MARG 0
+//#define Y_MOVE_MARG 0
+//#define Z_MOVE_MARG 0
 #define INTERVAL 100
-#define TIME 1000 / INTERVAL * 10
+#define TIME 1000 / INTERVAL * 60
+//#define TIME 1
 
 int main()
 {
     PRINT("My shot at perspective projection of 3D points to a 2D screen\n\n");
 
     //  TODO:
-    // - optimalize display even more (done)
-    // - threads + keyboard events
+    // - keyboard events (done)
+    // - better movement
+    // - rotation
     // - absolute coordinates to camera coordinates
+    // - threads?
 
     //      Setup:
     // lines
@@ -54,8 +60,8 @@ int main()
     Screen screen(WIDTH, HEIGHT, FOV);
     
     // game loop
-    boxVector[0].move(-X_MOVE_MARG / 2, -Y_MOVE_MARG / 2, 0);
-    for (int i = 0, j = 0, k = 0, xMove = X_MOVE, yMove = Y_MOVE, zMove = Z_MOVE; i < TIME; i++)
+    //boxVector[0].move(-X_MOVE_MARG / 2, -Y_MOVE_MARG / 2, 0);
+    for (int i = 0, j = 0, k = 0, xMove = X_MOVE, yMove = Y_MOVE, zMove = Z_MOVE; i < TIME && screen.isRunning; i++)
     {
         // clear the screen
         screen.clear();
@@ -65,7 +71,7 @@ int main()
         screen.draw(vLine, '|');
 
         // animate objects
-        boxVector[0].move(xMove, yMove, zMove);
+        /*boxVector[0].move(xMove, yMove, zMove);
         j++;
         if (j >= X_MOVE_MARG / X_MOVE)
         {
@@ -77,7 +83,7 @@ int main()
         {
             yMove *= -1;
             k = 0;
-        }
+        }*/
 
         // draw objects
         screen.draw(boxVector, 'o');
@@ -88,5 +94,8 @@ int main()
         // display
         Sleep(INTERVAL);
         screen.display();
+
+        // keyboard events check
+        screen.keyboard_events(boxVector);
     }
 }

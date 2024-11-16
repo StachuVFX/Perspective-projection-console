@@ -2,11 +2,12 @@
 
 #include <iostream>
 #include <string>
+#include <conio.h>
 
 #include "objects.h"
 
 #define PRINT(x) std::cout << x
-#define LOG(x) std::cout << "LOG: " << x
+#define LOG(x) std::cout << std::endl << "LOG: " << x
 
 #define PI 3.14159265359
 #define RAD(x) x * PI / 180
@@ -28,6 +29,9 @@ private:
     double fov, zV;
     // screen "pixels"
     char screen[HEIGHT][WIDTH];
+public:
+    // should the screen keep displaying
+    bool isRunning = true;
 public:
     Screen()
         : m_width(WIDTH), m_height(HEIGHT), fov(90), zV(-m_width / 2)
@@ -215,18 +219,6 @@ public:
     //  display screen line by line as  strings
     void display()
     {
-        /*PRINT(std::endl);
-        for (int i = 0; i < m_height; i++)
-        {
-            char line[WIDTH + 1];
-            line[m_width] = '\0';
-            for (int j = 0; j < m_width; j++)
-            {
-                line[j] = screen[i][j];
-            }
-            PRINT(line << std::endl);
-        }*/
-
         char screenText[HEIGHT * (WIDTH + 1)];
         for (int i = 0; i < m_height - 1; i++)
         {
@@ -241,5 +233,96 @@ public:
             }
         }
         PRINT(std::endl << screenText);
+    }
+
+    // listen to keypresses
+    void keyboard_events(std::vector<Box>& boxes)
+    {
+        char key = ' ';
+        char specialKey = ' ';
+        do
+        {
+            //key = std::cin.get();
+            key = _getch();
+            switch (key)
+            {
+            case 27:
+                // SPACE
+                PRINT("\nESC pressed, stopping the program...\n");
+                isRunning = false;
+                break;
+            case 13:
+                // ENTER
+                break;
+            case -32:
+                // special keys
+                specialKey = _getch();
+                switch (specialKey)
+                {
+                case 72:
+                    // Up Arrow
+                    //LOG("uArr");
+                    for (int i = 0; i < boxes.size(); i++)
+                    {
+                        boxes[i].move(0, 1, 0);
+                    }
+                    break;
+                case 80:
+                    // Down Arrow
+                    //LOG("dArr");
+                    for (int i = 0; i < boxes.size(); i++)
+                    {
+                        boxes[i].move(0, -1, 0);
+                    }
+                    break;
+                case 75:
+                    // Left Arrow
+                    //LOG("lArr");
+                    for (int i = 0; i < boxes.size(); i++)
+                    {
+                        boxes[i].move(-2, 0, 0);
+                    }
+                    break;
+                case 77:
+                    // Right Arrow
+                    //LOG("rArr");
+                    for (int i = 0; i < boxes.size(); i++)
+                    {
+                        boxes[i].move(2, 0, 0);
+                    }
+                    break;
+                default:
+                    //LOG("Key: " << (int)key << " -> " << (int)specialKey << std::endl);
+                    break;
+                }
+                break;
+                //case 224:
+                //    // special keys
+                //    specialKey = _getch();
+                //    switch (specialKey)
+                //    {
+                //    case 72:
+                //        LOG("uArr");
+                //        break;
+                //    case 80:
+                //        LOG("dArr");
+                //        break;
+                //    case 75:
+                //        LOG("lArr");
+                //        break;
+                //    case 77:
+                //        LOG("rArr");
+                //        break;
+                //    default:
+                //        //LOG("Key: " << (int)key << " -> " << (int)specialKey << std::endl);
+                //        break;
+                //    }
+                break;
+            default:
+                //LOG("Key: " << (int)key << " -> " << (int)_getch() << std::endl);
+                //LOG("Key: " << (int)key);
+                break;
+            }
+        } while (isRunning && false);
     }
 };
