@@ -18,7 +18,7 @@
 //#define X_MOVE_MARG 0
 //#define Y_MOVE_MARG 0
 //#define Z_MOVE_MARG 0
-#define INTERVAL 100
+#define INTERVAL 10
 #define TIME 1000 / INTERVAL * 60
 //#define TIME 1
 
@@ -27,8 +27,9 @@ int main()
     PRINT("My shot at perspective projection of 3D points to a 2D screen\n\n");
 
     //  TODO:
-    // - keyboard events (done)
-    // - better movement
+    // - box class actually inheriting object class (done)
+    // - better movement - object vector inside screen class (done)
+    // - code cleaning
     // - rotation
     // - absolute coordinates to camera coordinates
     // - threads?
@@ -38,9 +39,9 @@ int main()
     Horizontal_Line hLine(0);
     Vertical_Line vLine(0);
 
-    // boxes (width, height, depth, x, y, z, ifLines)
-    std::vector<Box> boxVector = {
-        Box(20, 10, 20, 0, 0, 30, true)
+    // boxes (width, height, depth, position?, ifLines?)
+    std::vector<Object_3D> objectVector = {
+        Box(20, 10, 20, Point_3D(0, 0, 30))
         /*Box(10, 5, 10, -36, -10, 10),
         Box(10, 5, 10,  36, -10, 10),
         Box(10, 5, 10,  36,  10, 10),
@@ -58,6 +59,9 @@ int main()
     //      Drawing:
     // screen
     Screen screen(WIDTH, HEIGHT, FOV);
+
+    // add objects
+    screen.add_objects(objectVector);
     
     // game loop
     //boxVector[0].move(-X_MOVE_MARG / 2, -Y_MOVE_MARG / 2, 0);
@@ -67,8 +71,8 @@ int main()
         screen.clear();
 
         // draw lines
-        screen.draw(hLine, '-');
-        screen.draw(vLine, '|');
+        screen.draw_line_horizontal(hLine, '-');
+        screen.draw_line_vertical(vLine, '|');
 
         // animate objects
         /*boxVector[0].move(xMove, yMove, zMove);
@@ -86,7 +90,7 @@ int main()
         }*/
 
         // draw objects
-        screen.draw(boxVector, 'o');
+        screen.draw();
 
         // debug lines
         //screen.draw(lineVector, '.');
@@ -96,6 +100,6 @@ int main()
         screen.display();
 
         // keyboard events check
-        screen.keyboard_events(boxVector);
+        screen.keyboard_events();
     }
 }

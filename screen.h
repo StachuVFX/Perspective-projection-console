@@ -29,9 +29,13 @@ private:
     double fov, zV;
     // screen "pixels"
     char screen[HEIGHT][WIDTH];
+    // objects and lines indices vectors
+    std::vector<Object_3D> m_objects;
 public:
     // should the screen keep displaying
     bool isRunning = true;
+    // characters to print points and lines with
+    char m_pointsChar = 'o', m_linesChar = '.';
 public:
     Screen()
         : m_width(WIDTH), m_height(HEIGHT), fov(90), zV(-m_width / 2)
@@ -45,6 +49,24 @@ public:
     {
         LOG("zV: " << zV << "\n");
         clear();
+    }
+
+    //  add objects
+    void add_objects(std::vector<Object_3D>& objects)
+    {
+        for (int i = 0; i < objects.size(); i++)
+        {
+            m_objects.push_back(objects[i]);
+        }
+    }
+
+    // move all objects
+    void move_objects(double x, double y, double z)
+    {
+        for (int i = 0; i < m_objects.size(); i++)
+        {
+            m_objects[i].move(x, y, z);
+        }
     }
 
     //  clear the screen
@@ -72,7 +94,7 @@ public:
     }
 
     //  draw a horizontal line
-    void draw(const Horizontal_Line& line, const char& character)
+    void draw_line_horizontal (const Horizontal_Line& line, const char& character)
     {
         int y = m_height - ((int)line.y + m_height / 2) - 1;
         if (y > -1 && y < m_height)
@@ -84,7 +106,7 @@ public:
         }
     }
     //  draw a horizontal line
-    void draw(const Vertical_Line& line, const char& character)
+    void draw_line_vertical(const Vertical_Line& line, const char& character)
     {
         int x = (int)line.x + m_width / 2;
         if (x > -1 && x < m_width)
@@ -96,7 +118,7 @@ public:
         }
     }
     //  draw lines, each between 2 points
-    void draw(const std::vector<Line_2D>& lines_2d, const char& character)
+    void draw_lines(const std::vector<Line_2D>& lines_2d)
     {
         double lineWidth, lineHeight, lineLength;
         double x, y;
@@ -117,10 +139,10 @@ public:
                 points_2d.push_back(tmp_point_2d);
             }
         }
-        draw(points_2d, character);
+        draw_points_2d(points_2d, m_linesChar);
     }
     //  draw normalized 2d points
-    void draw(const std::vector<Point_2D> &points_2d, const char &character)
+    void draw_points_2d(const std::vector<Point_2D> &points_2d, const char &character)
     {
         for (int i = 0, x, y; i < points_2d.size(); i++)
         {
@@ -135,7 +157,7 @@ public:
         }
     }
     //  project 3d points to 2d and draw them (without lines)
-    void draw(const std::vector<Point_3D> &points_3d, const char &character)
+    void draw_points_3d(const std::vector<Point_3D> &points_3d)
     {
         Point_2D tmp_point_2d;
         std::vector<Point_2D> points_2d;
@@ -146,10 +168,10 @@ public:
             tmp_point_2d.y = (-zV * points_3d[i].y) / (points_3d[i].z - zV);
             points_2d.push_back(tmp_point_2d);
         }
-        draw(points_2d, character);
+        draw_points_2d(points_2d, m_pointsChar);
     }
     //  project 3d points to 2d and draw them (with lines)
-    void draw(const std::vector<Point_3D> &points_3d, const char &character, const std::vector<Line_2D_Indices> &linesIndices, const char &linesCharacter = '.')
+    void draw_points_3d(const std::vector<Point_3D> &points_3d, const std::vector<Line_2D_Indices> &linesIndices)
     {
         Point_2D tmp_point_2d;
         std::vector<Point_2D> points_2d;
@@ -168,20 +190,20 @@ public:
             lines_2d.push_back(Line_2D(points_2d[linesIndices[i].point_1], points_2d[linesIndices[i].point_2]));
         }
         
-        draw(lines_2d, linesCharacter);
-        draw(points_2d, character);
+        draw_lines(lines_2d);
+        draw_points_2d(points_2d, m_pointsChar);
     }
-    //  draw all points of objects vector
-    void draw(std::vector<Object_3D>& objects_3d, const char& character)
+    //  draw all objects
+    void draw()
     {
         std::vector<Point_3D> all_points_3d;
         std::vector<Line_2D_Indices> all_linesIndices;
         std::vector<Point_3D> tmp_points_3d;
         std::vector<Line_2D_Indices> tmp_linesIndices;
-        for (int i = 0; i < objects_3d.size(); i++)
+        for (int i = 0; i < m_objects.size(); i++)
         {
-            tmp_points_3d = objects_3d[i].normalizedPoints();
-            tmp_linesIndices = objects_3d[i].getLinesIndices(all_points_3d.size());
+            tmp_points_3d = m_objects[i].normalizedPoints();
+            tmp_linesIndices = m_objects[i].getLinesIndices(all_points_3d.size());
             for (int j = 0; j < tmp_linesIndices.size(); j++)
             {
                 all_linesIndices.push_back(tmp_linesIndices[j]);
@@ -191,10 +213,10 @@ public:
                 all_points_3d.push_back(tmp_points_3d[j]);
             }
         }
-        draw(all_points_3d, character, all_linesIndices);
+        draw_points_3d(all_points_3d, all_linesIndices);
     }
     //  draw all points of box vector
-    void draw(std::vector<Box>& objects_3d, const char& character)
+    /*void draw(std::vector<Box>& objects_3d, const char& character)
     {
         std::vector<Point_3D> all_points_3d;
         std::vector<Line_2D_Indices> all_linesIndices;
@@ -214,7 +236,7 @@ public:
             }
         }
         draw(all_points_3d, character, all_linesIndices);
-    }
+    }*/
 
     //  display screen line by line as  strings
     void display()
@@ -236,7 +258,7 @@ public:
     }
 
     // listen to keypresses
-    void keyboard_events(std::vector<Box>& boxes)
+    void keyboard_events()
     {
         char key = ' ';
         char specialKey = ' ';
@@ -262,34 +284,22 @@ public:
                 case 72:
                     // Up Arrow
                     //LOG("uArr");
-                    for (int i = 0; i < boxes.size(); i++)
-                    {
-                        boxes[i].move(0, 1, 0);
-                    }
+                    move_objects(0, 1, 0);
                     break;
                 case 80:
                     // Down Arrow
                     //LOG("dArr");
-                    for (int i = 0; i < boxes.size(); i++)
-                    {
-                        boxes[i].move(0, -1, 0);
-                    }
+                    move_objects(0, -1, 0);
                     break;
                 case 75:
                     // Left Arrow
                     //LOG("lArr");
-                    for (int i = 0; i < boxes.size(); i++)
-                    {
-                        boxes[i].move(-2, 0, 0);
-                    }
+                    move_objects(-2, 0, 0);
                     break;
                 case 77:
                     // Right Arrow
                     //LOG("rArr");
-                    for (int i = 0; i < boxes.size(); i++)
-                    {
-                        boxes[i].move(2, 0, 0);
-                    }
+                    move_objects(2, 0, 0);
                     break;
                 default:
                     //LOG("Key: " << (int)key << " -> " << (int)specialKey << std::endl);
