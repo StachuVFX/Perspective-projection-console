@@ -29,10 +29,10 @@ private:
     double fov, zV;
     // screen "pixels"
     char screen[HEIGHT][WIDTH];
-    // objects and lines indices vectors
+    // objects vector
     std::vector<Object_3D> m_objects;
 public:
-    // should the screen keep displaying
+    // should the screen keep being displayed
     bool isRunning = true;
     // characters to print points and lines with
     char m_pointsChar = 'o', m_linesChar = '.';
@@ -69,6 +69,50 @@ public:
         }
     }
 
+    // listen to keypresses
+    void keyboard_events()
+    {
+        char key = ' ';
+        char specialKey = ' ';
+        do
+        {
+            key = _getch();
+            switch (key)
+            {
+            case 27:    // SPACE
+                PRINT("\nESC pressed, stopping the program...\n");
+                isRunning = false;
+                break;
+            case 13:    // ENTER
+                break;
+            case -32:   // special keys
+                specialKey = _getch();
+                switch (specialKey)
+                {
+                case 72:    // Up Arrow
+                    move_objects(0, 1, 0);
+                    break;
+                case 80:    // Down Arrow
+                    move_objects(0, -1, 0);
+                    break;
+                case 75:    // Left Arrow
+                    move_objects(-2, 0, 0);
+                    break;
+                case 77:    // Right Arrow
+                    move_objects(2, 0, 0);
+                    break;
+                default:
+                    //LOG("Key: " << (int)key << " -> " << (int)specialKey << std::endl);
+                    break;
+                }
+                break;
+            default:
+                //LOG("Key: " << (int)key);
+                break;
+            }
+        } while (isRunning && false);
+    }
+
     //  clear the screen
     void clear()
     {
@@ -94,7 +138,7 @@ public:
     }
 
     //  draw a horizontal line
-    void draw_line_horizontal (const Horizontal_Line& line, const char& character)
+    void draw_line_horizontal (const Horizontal_Line &line, const char &character)
     {
         int y = m_height - ((int)line.y + m_height / 2) - 1;
         if (y > -1 && y < m_height)
@@ -106,7 +150,7 @@ public:
         }
     }
     //  draw a horizontal line
-    void draw_line_vertical(const Vertical_Line& line, const char& character)
+    void draw_line_vertical(const Vertical_Line &line, const char &character)
     {
         int x = (int)line.x + m_width / 2;
         if (x > -1 && x < m_width)
@@ -118,7 +162,7 @@ public:
         }
     }
     //  draw lines, each between 2 points
-    void draw_lines(const std::vector<Line_2D>& lines_2d)
+    void draw_lines(const std::vector<Line_2D> &lines_2d)
     {
         double lineWidth, lineHeight, lineLength;
         double x, y;
@@ -131,9 +175,7 @@ public:
             lineLength = abs(lineWidth) > abs(lineHeight) ? abs(lineWidth) : abs(lineHeight);
             for (int j = 0; j < lineLength; j++)
             {
-                //x = lines_2d[i].point_1.x - (lineWidth / (abs(lineWidth) - j + 1));
-                //y = lines_2d[i].point_1.y - (lineHeight / (abs(lineHeight) - j + 1));
-                x = lines_2d[i].point_1.x - j * lineWidth / ONE_IF_ZERO(lineLength);    // here!
+                x = lines_2d[i].point_1.x - j * lineWidth / ONE_IF_ZERO(lineLength);
                 y = lines_2d[i].point_1.y - j * lineHeight / ONE_IF_ZERO(lineLength);
                 tmp_point_2d = Point_2D(x, y);
                 points_2d.push_back(tmp_point_2d);
@@ -155,20 +197,6 @@ public:
                 screen[y][x] = character;
             }
         }
-    }
-    //  project 3d points to 2d and draw them (without lines)
-    void draw_points_3d(const std::vector<Point_3D> &points_3d)
-    {
-        Point_2D tmp_point_2d;
-        std::vector<Point_2D> points_2d;
-        for (int i = 0; i < points_3d.size(); i++)
-        {
-            // my projection formula derived from the slope-intercept line formula
-            tmp_point_2d.x = (-zV * points_3d[i].x) / (points_3d[i].z - zV);
-            tmp_point_2d.y = (-zV * points_3d[i].y) / (points_3d[i].z - zV);
-            points_2d.push_back(tmp_point_2d);
-        }
-        draw_points_2d(points_2d, m_pointsChar);
     }
     //  project 3d points to 2d and draw them (with lines)
     void draw_points_3d(const std::vector<Point_3D> &points_3d, const std::vector<Line_2D_Indices> &linesIndices)
@@ -215,30 +243,8 @@ public:
         }
         draw_points_3d(all_points_3d, all_linesIndices);
     }
-    //  draw all points of box vector
-    /*void draw(std::vector<Box>& objects_3d, const char& character)
-    {
-        std::vector<Point_3D> all_points_3d;
-        std::vector<Line_2D_Indices> all_linesIndices;
-        std::vector<Point_3D> tmp_points_3d;
-        std::vector<Line_2D_Indices> tmp_linesIndices;
-        for (int i = 0; i < objects_3d.size(); i++)
-        {
-            tmp_points_3d = objects_3d[i].normalizedPoints();
-            tmp_linesIndices = objects_3d[i].getLinesIndices(all_points_3d.size());
-            for (int j = 0; j < tmp_linesIndices.size(); j++)
-            {
-                all_linesIndices.push_back(tmp_linesIndices[j]);
-            }
-            for (int j = 0; j < tmp_points_3d.size(); j++)
-            {
-                all_points_3d.push_back(tmp_points_3d[j]);
-            }
-        }
-        draw(all_points_3d, character, all_linesIndices);
-    }*/
 
-    //  display screen line by line as  strings
+    //  display screen as a single string
     void display()
     {
         char screenText[HEIGHT * (WIDTH + 1)];
@@ -255,84 +261,5 @@ public:
             }
         }
         PRINT(std::endl << screenText);
-    }
-
-    // listen to keypresses
-    void keyboard_events()
-    {
-        char key = ' ';
-        char specialKey = ' ';
-        do
-        {
-            //key = std::cin.get();
-            key = _getch();
-            switch (key)
-            {
-            case 27:
-                // SPACE
-                PRINT("\nESC pressed, stopping the program...\n");
-                isRunning = false;
-                break;
-            case 13:
-                // ENTER
-                break;
-            case -32:
-                // special keys
-                specialKey = _getch();
-                switch (specialKey)
-                {
-                case 72:
-                    // Up Arrow
-                    //LOG("uArr");
-                    move_objects(0, 1, 0);
-                    break;
-                case 80:
-                    // Down Arrow
-                    //LOG("dArr");
-                    move_objects(0, -1, 0);
-                    break;
-                case 75:
-                    // Left Arrow
-                    //LOG("lArr");
-                    move_objects(-2, 0, 0);
-                    break;
-                case 77:
-                    // Right Arrow
-                    //LOG("rArr");
-                    move_objects(2, 0, 0);
-                    break;
-                default:
-                    //LOG("Key: " << (int)key << " -> " << (int)specialKey << std::endl);
-                    break;
-                }
-                break;
-                //case 224:
-                //    // special keys
-                //    specialKey = _getch();
-                //    switch (specialKey)
-                //    {
-                //    case 72:
-                //        LOG("uArr");
-                //        break;
-                //    case 80:
-                //        LOG("dArr");
-                //        break;
-                //    case 75:
-                //        LOG("lArr");
-                //        break;
-                //    case 77:
-                //        LOG("rArr");
-                //        break;
-                //    default:
-                //        //LOG("Key: " << (int)key << " -> " << (int)specialKey << std::endl);
-                //        break;
-                //    }
-                break;
-            default:
-                //LOG("Key: " << (int)key << " -> " << (int)_getch() << std::endl);
-                //LOG("Key: " << (int)key);
-                break;
-            }
-        } while (isRunning && false);
     }
 };
