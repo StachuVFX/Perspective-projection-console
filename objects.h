@@ -2,6 +2,10 @@
 
 #include <vector>
 
+#define PI 3.14159265359
+#define RAD(x) x * PI / 180
+#define DEG(x) x * 180 / PI
+
 //  horizontal line class
 class Horizontal_Line
 {
@@ -34,6 +38,19 @@ public:
     double x, y, z;
 public:
     Point_3D(double x = 0, double y = 0, double z = 0) : x(x), y(y), z(z) {}
+
+    void move(double x, double y, double z)
+    {
+        this->x += x;
+        this->y += y;
+        this->z += z;
+    }
+    void move(Point_3D vector)
+    {
+        x += vector.x;
+        y += vector.y;
+        z += vector.z;
+    }
 };
 //  2D line index class
 class Line_2D_Indices {
@@ -62,32 +79,65 @@ class Object_3D
 {
 protected:
     Point_3D position;
+    Point_3D rotation;
     bool ifLines;
     std::vector<Point_3D> points;
     std::vector<Line_2D_Indices> linesIndices;
 public:
-    Object_3D(Point_3D position = Point_3D(0, 0, 0), std::vector<Point_3D> points = {}, std::vector<Line_2D_Indices> linesIndices = {}, bool ifLines = true) : position(position), points(points), linesIndices(linesIndices), ifLines(ifLines) {}
+    Object_3D(std::vector<Point_3D> points = {}, Point_3D position = Point_3D(0, 0, 0), Point_3D rotation = Point_3D(0, 0, 0), std::vector<Line_2D_Indices> linesIndices = {}, bool ifLines = true) : points(points), position(position), rotation(rotation), linesIndices(linesIndices), ifLines(ifLines) {}
 
     Point_3D getPosition()
     {
         return position;
     }
+    Point_3D getRotation()
+    {
+        return rotation;
+    }
 
     std::vector<Point_3D> normalizedPoints()
     {
         std::vector<Point_3D> normPoints;
+        Point_3D tmp_point;
         for (int i = 0; i < points.size(); i++)
         {
-            normPoints.push_back(Point_3D(points[i].x + position.x, points[i].y + position.y, points[i].z + position.z));
+            tmp_point = points[i];
+            tmp_point.move(position);
+            normPoints.push_back(tmp_point);
         }
         return normPoints;
     }
+    //std::vector<Point_3D> normalizedPoints()
+    //{
+    //    std::vector<Point_3D> normPoints;
+    //    Point_3D point_0;
+    //    double alpha = rotation.z;
+    //    Point_3D point_1;
+    //    double r;
+    //    double beta;
+    //    double gamma;
+    //    int p0p = 1;
+    //    int p1p = 1;
+    //    for (int i = 0; i < points.size(); i++)
+    //    {
+    //        point_0 = points[i];
 
-    std::vector<Line_2D_Indices> getLinesIndices()
+    //        // z axis rotation
+
+    //        // temporary
+    //        //point_1 = point_0;
+
+    //        point_1.move(position);
+    //        normPoints.push_back(point_1);
+    //    }
+    //    return normPoints;
+    //}
+
+    /*std::vector<Line_2D_Indices> getLinesIndices()
     {
         return linesIndices;
-    }
-    std::vector<Line_2D_Indices> getLinesIndices(const int shift)
+    }*/
+    std::vector<Line_2D_Indices> getLinesIndices(const int &shift = 0)
     {
         std::vector<Line_2D_Indices> shiftedLinesIndices;
         for (int i = 0; i < linesIndices.size(); i++)
@@ -130,6 +180,18 @@ public:
         position.y = point_3d.y;
         position.z = point_3d.z;
     }
+    void rotate(double x, double y, double z)
+    {
+        rotation.x += x;
+        rotation.y += y;
+        rotation.z += z;
+    }
+    void rotate(Point_3D angles)
+    {
+        rotation.x += angles.x;
+        rotation.y += angles.y;
+        rotation.z += angles.z;
+    }
 };
 
 //  box class
@@ -167,9 +229,11 @@ protected:
         linesIndices.push_back({ 3, 7 });
     }
 public:
-    Box(double width = 2, double height = 2, double depth = 2, Point_3D position = Point_3D(0, 0, 0), bool ifLines = true) : width(width), height(height), depth(depth)
+    Box(double width, double height, double depth, Point_3D position = Point_3D(0, 0, 0), Point_3D rotation = Point_3D(0, 0, 0), bool ifLines = true)
+        : width(width), height(height), depth(depth)
     {
         this->position = position;
+        this->rotation = rotation;
         this->ifLines = ifLines;
         setPoints();
         if (ifLines) setLines();

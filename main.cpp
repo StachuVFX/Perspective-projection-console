@@ -9,8 +9,10 @@ int main()
     PRINT("My shot at perspective projection of 3D points to a 2D screen\n\n");
 
     //  TODO:
-    // - code cleaning (done)
+    // - console width and height correction (done)
     // - rotation
+    // - controls for depth and rotation
+    // - not displaying negative z
     // - absolute coordinates to camera coordinates
     // - threads?
 
@@ -20,10 +22,17 @@ int main()
     Vertical_Line vLine(0);
 
     // objects
+    std::vector<Point_3D> points = { Point_3D(8, 6, 0) };
+    Point_3D position(0, 0, 1);
+    Point_3D rotation(0, 0, 45);
+    std::vector<Line_2D_Indices> linesIndices = {};
+    bool ifLines = false;
+
     std::vector<Object_3D> objectVector = {
-        // boxes (width, height, depth, position?, ifLines?)
-        Box(10,  5, 10, Point_3D(-36, -10, 10), false),
-        Box(20, 10, 20, Point_3D(  0,   0, 30))
+        Object_3D(points, position, rotation, linesIndices, ifLines)
+        // boxes (width, height, depth, position, rotation, ifLines?)
+        //Box( 8,  8, 8, Point_3D(-24, -10, 10), Point_3D(0, 0, 125), false),
+        //Box(16, 16, 16, Point_3D(  0,   0, 20), Point_3D(0, 0, 35), false)
         //Box(10,  5, 10, Point_3D( 36, -10, 10)),
         //Box(10,  5, 10, Point_3D( 36,  10, 10)),
         //Box(10,  5, 10, Point_3D(-36,  10, 10))

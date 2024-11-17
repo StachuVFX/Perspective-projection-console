@@ -9,9 +9,6 @@
 #define PRINT(x) std::cout << x
 #define LOG(x) std::cout << std::endl << "LOG: " << x
 
-#define PI 3.14159265359
-#define RAD(x) x * PI / 180
-
 #define ONE_IF_ZERO(x) ((x == 0) ? 1 : x)
 
 #define WIDTH 120
@@ -96,10 +93,10 @@ public:
                     move_objects(0, -1, 0);
                     break;
                 case 75:    // Left Arrow
-                    move_objects(-2, 0, 0);
+                    move_objects(-1, 0, 0);
                     break;
                 case 77:    // Right Arrow
-                    move_objects(2, 0, 0);
+                    move_objects(1, 0, 0);
                     break;
                 default:
                     //LOG("Key: " << (int)key << " -> " << (int)specialKey << std::endl);
@@ -183,12 +180,12 @@ public:
         }
         draw_points_2d(points_2d, m_linesChar);
     }
-    //  draw normalized 2d points
+    //  draw normalized 2d points (with console character width correction)
     void draw_points_2d(const std::vector<Point_2D> &points_2d, const char &character)
     {
         for (int i = 0, x, y; i < points_2d.size(); i++)
         {
-            x = (int)points_2d[i].x + m_width / 2;
+            x = (int)(points_2d[i].x * 2) + m_width / 2;
             y = m_height - ((int)points_2d[i].y + m_height / 2) - 1;
 
             // out of bound check then draw
