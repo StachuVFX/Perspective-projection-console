@@ -5,6 +5,7 @@
 #define PI 3.14159265359
 #define RAD(x) x * PI / 180
 #define DEG(x) x * 180 / PI
+#define SGN(x) ((x > 0) - (x < 0))
 
 //  horizontal line class
 class Horizontal_Line
@@ -95,36 +96,24 @@ public:
         return rotation;
     }
 
-    /*std::vector<Point_3D> normalizedPoints()
-    {
-        std::vector<Point_3D> normPoints;
-        Point_3D tmp_point;
-        for (int i = 0; i < points.size(); i++)
-        {
-            tmp_point = points[i];
-            tmp_point.move(position);
-            normPoints.push_back(tmp_point);
-        }
-        return normPoints;
-    }*/
     std::vector<Point_3D> normalizedPoints()
     {
         std::vector<Point_3D> normPoints;
         Point_3D p0;
-        double alpha = rotation.z;
+        double alpha = 0;
         Point_3D p1;
         double r;
         double beta = 0;
         double gamma;
         int p0p = 1;
         int p1p = 1;
+        int multiplier = 1;
         for (int i = 0; i < points.size(); i++)
         {
-            p0 = points[i];
-            
-            p1.z = p0.z;
-
             //  z axis rotation
+            alpha = rotation.z;
+            p0 = points[i];
+            p1.z = p0.z;
             // step 1
             r = sqrt(pow(p0.x, 2) + pow(p0.y, 2));
             // step 2
@@ -137,50 +126,62 @@ public:
             else if (p0.x >= 0 && p0.y < 0)
                 p0p = 4;
             // step 3
-            if (p0p == 1)
-                beta = DEG(atan(abs(p0.y / p0.x)));
-            else if (p0p == 2)
-                beta = 180 - DEG(atan(abs(p0.y / p0.x)));
-            else if (p0p == 3)
-                beta = 180 + DEG(atan(abs(p0.y / p0.x)));
-            else if (p0p == 4)
-                beta = 360 - DEG(atan(abs(p0.y / p0.x)));
+            beta = DEG(atan(abs(p0.y / p0.x)));
+            beta = abs(beta + (p0p == 2 ? -180 : p0p == 3 ? 180 : p0p == 4 ? -360 : 0));
             // step 4
             gamma = alpha + beta;
-            while (gamma < 0)
-                gamma += 360;
-            while (gamma >= 360)
-                gamma -= 360;
-            // step 5
-            if (gamma < 90)
-                p1p = 1;
-            else if (gamma < 180)
-                p1p = 2;
-            else if (gamma < 270)
-                p1p = 3;
-            else if (gamma < 360)
-                p1p = 4;
-            // step 6
-            if (p1p == 1)
-                p1.x = sqrt(pow(r, 2) / (pow(tan(RAD(gamma)), 2) + 1));
-            else if (p1p == 2)
-                p1.x = sqrt(pow(r, 2) / (pow(tan(RAD(gamma)), 2) + 1)) * -1;
-            else if (p1p == 3)
-                p1.x = sqrt(pow(r, 2) / (pow(tan(RAD(gamma)), 2) + 1)) * -1;
-            else if (p1p == 4)
-                p1.x = sqrt(pow(r, 2) / (pow(tan(RAD(gamma)), 2) + 1));
+            gamma -= floor(gamma / 360) * 360;
+            // step 5 and 6
+            p1.x = sqrt(pow(r, 2) / (pow(tan(RAD(gamma)), 2) + 1)) * SGN(cos(RAD(gamma)));
+            p1.y = sqrt(pow(r, 2) / (pow(1 / tan(RAD(gamma)), 2) + 1)) * SGN(sin(RAD(gamma)));
+            
+            //  x axis rotation
+            alpha = rotation.x;
+            p0 = p1;
+            // step 1
+            r = sqrt(pow(p0.y, 2) + pow(p0.z, 2));
+            // step 2
+            if (p0.y >= 0 && p0.z >= 0)
+                p0p = 1;
+            else if (p0.y < 0 && p0.z >= 0)
+                p0p = 2;
+            else if (p0.y < 0 && p0.z < 0)
+                p0p = 3;
+            else if (p0.y >= 0 && p0.z < 0)
+                p0p = 4;
+            // step 3
+            beta = DEG(atan(abs(p0.z / p0.y)));
+            beta = abs(beta + (p0p == 2 ? -180 : p0p == 3 ? 180 : p0p == 4 ? -360 : 0));
+            // step 4
+            gamma = alpha + beta;
+            gamma -= floor(gamma / 360) * 360;
+            // step 5 and 6
+            p1.y = sqrt(pow(r, 2) / (pow(tan(RAD(gamma)), 2) + 1)) * SGN(cos(RAD(gamma)));
+            p1.z = sqrt(pow(r, 2) / (pow(1 / tan(RAD(gamma)), 2) + 1)) * SGN(sin(RAD(gamma)));
 
-            if (p1p == 1)
-                p1.y = sqrt(pow(r, 2) / (pow(1 / tan(RAD(gamma)), 2) + 1));
-            else if (p1p == 2)
-                p1.y = sqrt(pow(r, 2) / (pow(1 / tan(RAD(gamma)), 2) + 1));
-            else if (p1p == 3)
-                p1.y = sqrt(pow(r, 2) / (pow(1 / tan(RAD(gamma)), 2) + 1)) * -1;
-            else if (p1p == 4)
-                p1.y = sqrt(pow(r, 2) / (pow(1 / tan(RAD(gamma)), 2) + 1)) * -1;
-
-            // temporary
-            //p1 = p0;
+            //  y axis rotation
+            alpha = rotation.y;
+            p0 = p1;
+            // step 1
+            r = sqrt(pow(p0.z, 2) + pow(p0.x, 2));
+            // step 2
+            if (p0.z >= 0 && p0.x >= 0)
+                p0p = 1;
+            else if (p0.z < 0 && p0.x >= 0)
+                p0p = 2;
+            else if (p0.z < 0 && p0.x < 0)
+                p0p = 3;
+            else if (p0.z >= 0 && p0.x < 0)
+                p0p = 4;
+            // step 3
+            beta = DEG(atan(abs(p0.x / p0.z)));
+            beta = abs(beta + (p0p == 2 ? -180 : p0p == 3 ? 180 : p0p == 4 ? -360 : 0));
+            // step 4
+            gamma = alpha + beta;
+            gamma -= floor(gamma / 360) * 360;
+            // step 5 and 6
+            p1.z = sqrt(pow(r, 2) / (pow(tan(RAD(gamma)), 2) + 1)) * SGN(cos(RAD(gamma)));
+            p1.x = sqrt(pow(r, 2) / (pow(1 / tan(RAD(gamma)), 2) + 1)) * SGN(sin(RAD(gamma)));
 
             p1.move(position);
             normPoints.push_back(p1);
@@ -188,10 +189,6 @@ public:
         return normPoints;
     }
 
-    /*std::vector<Line_2D_Indices> getLinesIndices()
-    {
-        return linesIndices;
-    }*/
     std::vector<Line_2D_Indices> getLinesIndices(const int &shift = 0)
     {
         std::vector<Line_2D_Indices> shiftedLinesIndices;

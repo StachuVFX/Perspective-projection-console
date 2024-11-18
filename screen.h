@@ -66,6 +66,15 @@ public:
         }
     }
 
+    // rotate all objects
+    void rotate_objects(double x, double y, double z)
+    {
+        for (int i = 0; i < m_objects.size(); i++)
+        {
+            m_objects[i].rotate(x, y, z);
+        }
+    }
+
     // listen to keypresses
     void keyboard_events()
     {
@@ -102,6 +111,30 @@ public:
                     //LOG("Key: " << (int)key << " -> " << (int)specialKey << std::endl);
                     break;
                 }
+                break;
+            case 'p':    // P (depth up)
+                move_objects(0, 0, 1);
+                break;
+            case 'l':    // L (depth down)
+                move_objects(0, 0, -1);
+                break;
+            case 'i':    // I (rotation x up)
+                rotate_objects(2.5, 0, 0);
+                break;
+            case 'o':    // O (rotation x down)
+                rotate_objects(-2.5, 0, 0);
+                break;
+            case 'j':    // J (rotation y up)
+                rotate_objects(0, 2.5, 0);
+                break;
+            case 'k':    // K (rotation y down)
+                rotate_objects(0, -2.5, 0);
+                break;
+            case 'n':    // N (rotation z up)
+                rotate_objects(0, 0, 2.5);
+                break;
+            case 'm':    // M (rotation z down)
+                rotate_objects(0, 0, -2.5);
                 break;
             default:
                 //LOG("Key: " << (int)key);

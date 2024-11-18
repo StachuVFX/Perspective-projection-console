@@ -10,10 +10,11 @@ int main()
 
     //  TODO:
     // - console width and height correction (done)
-    // - rotation (half-done, the formula works!)
-    //      - optimize the code
-    //      - make it for all axes
-    // - controls for depth and rotation
+    // - rotation (DONEEEEEEE!!!!!!!!!)
+    //      - optimize the code (done)
+    //      - make it for all axes (done but not sure if properly)
+    // - controls for depth and rotation (done)
+    // - check if rotates correctly
     // - not displaying negative z
     // - absolute coordinates to camera coordinates
     // - threads?
@@ -24,29 +25,51 @@ int main()
     Vertical_Line vLine(0);
 
     // objects
-    std::vector<Point_3D> points = {
-        /*Point_3D( 8, 8, 0),
-        Point_3D(-8, 8, 0),
-        Point_3D(-8,-8, 0),
-        Point_3D( 8,-8, 0)*/
-        Point_3D( 12, 0, 0),
-        Point_3D( 0, 12, 0),
-        Point_3D(-12, 0, 0),
-        Point_3D( 0,-12, 0)
+    //std::vector<Point_3D> square = {
+    //    /*Point_3D( 8, 8, 0),
+    //    Point_3D(-8, 8, 0),
+    //    Point_3D(-8,-8, 0),
+    //    Point_3D( 8,-8, 0)*/
+    //    Point_3D( 12, 0, 0),
+    //    Point_3D( 0, 12, 0),
+    //    Point_3D(-12, 0, 0),
+    //    Point_3D( 0,-12, 0)
+    //};
+    //Point_3D square_position(0, 0, 20);
+    //Point_3D square_rotation(0, 0, 0);
+    //std::vector<Line_2D_Indices> square_linesIndices = {
+    //    Line_2D_Indices(0, 1),
+    //    Line_2D_Indices(1, 2),
+    //    Line_2D_Indices(2, 3),
+    //    Line_2D_Indices(3, 0)
+    //};
+    //bool square_ifLines = true;
+
+    std::vector<Point_3D> pyramid = {
+        Point_3D(-12, 0,-12),
+        Point_3D( 12, 0,-12),
+        Point_3D( 12, 0, 12),
+        Point_3D(-12, 0, 12),
+        Point_3D( 0, 24, 0)
     };
-    Point_3D position(0, 0, 1);
-    Point_3D rotation(0, 0, 30);
-    std::vector<Line_2D_Indices> linesIndices = {
+    Point_3D pyramid_position(0, -12, 20);
+    Point_3D pyramid_rotation(0, 0, 0);
+    std::vector<Line_2D_Indices> pyramid_linesIndices = {
         Line_2D_Indices(0, 1),
         Line_2D_Indices(1, 2),
         Line_2D_Indices(2, 3),
-        Line_2D_Indices(3, 0)
+        Line_2D_Indices(3, 0),
+        Line_2D_Indices(0, 4),
+        Line_2D_Indices(1, 4),
+        Line_2D_Indices(2, 4),
+        Line_2D_Indices(3, 4)
     };
-    bool ifLines = true;
+    bool pyramid_ifLines = true;
 
     std::vector<Object_3D> objectVector = {
-        Object_3D(points, position, rotation, linesIndices, ifLines)
-        //Box( 16, 16, 16, Point_3D(0, 0, 10), Point_3D(0, 0, 30), true)
+        //Object_3D(square, square_position, square_rotation, square_linesIndices, square_ifLines),
+        //Box( 16, 16, 16, Point_3D(0, 0, 10), Point_3D(0, 0, 0), true),
+        Object_3D(pyramid, pyramid_position, pyramid_rotation, pyramid_linesIndices, pyramid_ifLines)
         // boxes (width, height, depth, position, rotation, ifLines?)
         //Box( 8,  8, 8, Point_3D(-24, -10, 10), Point_3D(0, 0, 125), false),
         //Box(16, 16, 16, Point_3D(  0,   0, 20), Point_3D(0, 0, 35), false)
