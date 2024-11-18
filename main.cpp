@@ -10,7 +10,9 @@ int main()
 
     //  TODO:
     // - console width and height correction (done)
-    // - rotation
+    // - rotation (half-done, the formula works!)
+    //      - optimize the code
+    //      - make it for all axes
     // - controls for depth and rotation
     // - not displaying negative z
     // - absolute coordinates to camera coordinates
@@ -22,14 +24,29 @@ int main()
     Vertical_Line vLine(0);
 
     // objects
-    std::vector<Point_3D> points = { Point_3D(8, 6, 0) };
+    std::vector<Point_3D> points = {
+        /*Point_3D( 8, 8, 0),
+        Point_3D(-8, 8, 0),
+        Point_3D(-8,-8, 0),
+        Point_3D( 8,-8, 0)*/
+        Point_3D( 12, 0, 0),
+        Point_3D( 0, 12, 0),
+        Point_3D(-12, 0, 0),
+        Point_3D( 0,-12, 0)
+    };
     Point_3D position(0, 0, 1);
-    Point_3D rotation(0, 0, 45);
-    std::vector<Line_2D_Indices> linesIndices = {};
-    bool ifLines = false;
+    Point_3D rotation(0, 0, 30);
+    std::vector<Line_2D_Indices> linesIndices = {
+        Line_2D_Indices(0, 1),
+        Line_2D_Indices(1, 2),
+        Line_2D_Indices(2, 3),
+        Line_2D_Indices(3, 0)
+    };
+    bool ifLines = true;
 
     std::vector<Object_3D> objectVector = {
         Object_3D(points, position, rotation, linesIndices, ifLines)
+        //Box( 16, 16, 16, Point_3D(0, 0, 10), Point_3D(0, 0, 30), true)
         // boxes (width, height, depth, position, rotation, ifLines?)
         //Box( 8,  8, 8, Point_3D(-24, -10, 10), Point_3D(0, 0, 125), false),
         //Box(16, 16, 16, Point_3D(  0,   0, 20), Point_3D(0, 0, 35), false)

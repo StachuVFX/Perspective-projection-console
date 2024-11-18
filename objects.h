@@ -95,7 +95,7 @@ public:
         return rotation;
     }
 
-    std::vector<Point_3D> normalizedPoints()
+    /*std::vector<Point_3D> normalizedPoints()
     {
         std::vector<Point_3D> normPoints;
         Point_3D tmp_point;
@@ -106,32 +106,87 @@ public:
             normPoints.push_back(tmp_point);
         }
         return normPoints;
+    }*/
+    std::vector<Point_3D> normalizedPoints()
+    {
+        std::vector<Point_3D> normPoints;
+        Point_3D p0;
+        double alpha = rotation.z;
+        Point_3D p1;
+        double r;
+        double beta = 0;
+        double gamma;
+        int p0p = 1;
+        int p1p = 1;
+        for (int i = 0; i < points.size(); i++)
+        {
+            p0 = points[i];
+            
+            p1.z = p0.z;
+
+            //  z axis rotation
+            // step 1
+            r = sqrt(pow(p0.x, 2) + pow(p0.y, 2));
+            // step 2
+            if (p0.x >= 0 && p0.y >= 0)
+                p0p = 1;
+            else if (p0.x < 0 && p0.y >= 0)
+                p0p = 2;
+            else if (p0.x < 0 && p0.y < 0)
+                p0p = 3;
+            else if (p0.x >= 0 && p0.y < 0)
+                p0p = 4;
+            // step 3
+            if (p0p == 1)
+                beta = DEG(atan(abs(p0.y / p0.x)));
+            else if (p0p == 2)
+                beta = 180 - DEG(atan(abs(p0.y / p0.x)));
+            else if (p0p == 3)
+                beta = 180 + DEG(atan(abs(p0.y / p0.x)));
+            else if (p0p == 4)
+                beta = 360 - DEG(atan(abs(p0.y / p0.x)));
+            // step 4
+            gamma = alpha + beta;
+            while (gamma < 0)
+                gamma += 360;
+            while (gamma >= 360)
+                gamma -= 360;
+            // step 5
+            if (gamma < 90)
+                p1p = 1;
+            else if (gamma < 180)
+                p1p = 2;
+            else if (gamma < 270)
+                p1p = 3;
+            else if (gamma < 360)
+                p1p = 4;
+            // step 6
+            if (p1p == 1)
+                p1.x = sqrt(pow(r, 2) / (pow(tan(RAD(gamma)), 2) + 1));
+            else if (p1p == 2)
+                p1.x = sqrt(pow(r, 2) / (pow(tan(RAD(gamma)), 2) + 1)) * -1;
+            else if (p1p == 3)
+                p1.x = sqrt(pow(r, 2) / (pow(tan(RAD(gamma)), 2) + 1)) * -1;
+            else if (p1p == 4)
+                p1.x = sqrt(pow(r, 2) / (pow(tan(RAD(gamma)), 2) + 1));
+
+            if (p1p == 1)
+                p1.y = sqrt(pow(r, 2) / (pow(1 / tan(RAD(gamma)), 2) + 1));
+            else if (p1p == 2)
+                p1.y = sqrt(pow(r, 2) / (pow(1 / tan(RAD(gamma)), 2) + 1));
+            else if (p1p == 3)
+                p1.y = sqrt(pow(r, 2) / (pow(1 / tan(RAD(gamma)), 2) + 1)) * -1;
+            else if (p1p == 4)
+                p1.y = sqrt(pow(r, 2) / (pow(1 / tan(RAD(gamma)), 2) + 1)) * -1;
+
+            // temporary
+            //p1 = p0;
+
+            p1.move(position);
+            normPoints.push_back(p1);
+        }
+        return normPoints;
     }
-    //std::vector<Point_3D> normalizedPoints()
-    //{
-    //    std::vector<Point_3D> normPoints;
-    //    Point_3D point_0;
-    //    double alpha = rotation.z;
-    //    Point_3D point_1;
-    //    double r;
-    //    double beta;
-    //    double gamma;
-    //    int p0p = 1;
-    //    int p1p = 1;
-    //    for (int i = 0; i < points.size(); i++)
-    //    {
-    //        point_0 = points[i];
-
-    //        // z axis rotation
-
-    //        // temporary
-    //        //point_1 = point_0;
-
-    //        point_1.move(position);
-    //        normPoints.push_back(point_1);
-    //    }
-    //    return normPoints;
-    //}
 
     /*std::vector<Line_2D_Indices> getLinesIndices()
     {
