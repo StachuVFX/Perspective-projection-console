@@ -11,8 +11,11 @@
 
 #define ONE_IF_ZERO(x) ((x == 0) ? 1 : x)
 
-#define WIDTH 120
-#define HEIGHT 30
+//#define WIDTH 120
+//#define HEIGHT 30
+#define DEBUG_TEXT_LINES 2
+#define WIDTH 156
+#define HEIGHT 39
 #define FOV 90
 
 //  screen class
@@ -119,22 +122,22 @@ public:
                 move_objects(0, 0, -1);
                 break;
             case 'i':    // I (rotation x up)
-                rotate_objects(2.5, 0, 0);
-                break;
-            case 'o':    // O (rotation x down)
                 rotate_objects(-2.5, 0, 0);
                 break;
-            case 'j':    // J (rotation y up)
-                rotate_objects(0, 2.5, 0);
+            case 'o':    // O (rotation x down)
+                rotate_objects(2.5, 0, 0);
                 break;
-            case 'k':    // K (rotation y down)
+            case 'j':    // J (rotation y up)
                 rotate_objects(0, -2.5, 0);
                 break;
+            case 'k':    // K (rotation y down)
+                rotate_objects(0, 2.5, 0);
+                break;
             case 'n':    // N (rotation z up)
-                rotate_objects(0, 0, 2.5);
+                rotate_objects(0, 0, -2.5);
                 break;
             case 'm':    // M (rotation z down)
-                rotate_objects(0, 0, -2.5);
+                rotate_objects(0, 0, 2.5);
                 break;
             default:
                 //LOG("Key: " << (int)key);
@@ -274,9 +277,12 @@ public:
         draw_points_3d(all_points_3d, all_linesIndices);
     }
 
-    //  display screen as a single string
+    //  display screen
     void display()
     {
+        // first display position and rotation
+        printf("\n\nPosition: %g, %g, %g\nRotation: %g, %g, %g", m_objects[0].getPosition().x, m_objects[0].getPosition().y, m_objects[0].getPosition().z, m_objects[0].getRotation().x, m_objects[0].getRotation().y, m_objects[0].getRotation().z);
+        // then display the screen as a single string
         char screenText[HEIGHT * (WIDTH + 1)];
         for (int i = 0; i < m_height - 1; i++)
         {
@@ -290,6 +296,7 @@ public:
                 screenText[i * (m_width + 1) + j] = screen[i][j];
             }
         }
-        PRINT(std::endl << screenText);
+        //PRINT("\n\n" << screenText);
+        PRINT("\n" << screenText);
     }
 };

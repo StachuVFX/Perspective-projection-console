@@ -9,13 +9,11 @@ int main()
     PRINT("My shot at perspective projection of 3D points to a 2D screen\n\n");
 
     //  TODO:
-    // - console width and height correction (done)
-    // - rotation (DONEEEEEEE!!!!!!!!!)
-    //      - optimize the code (done)
-    //      - make it for all axes (done but not sure if properly)
-    // - controls for depth and rotation (done)
-    // - check if rotates correctly
+    // - check if rotates correctly (it doesn'n)
+    // - print position and rotation (done)
+    // - move methods from .h to .cpp files
     // - not displaying negative z
+    // - read objects from a file
     // - absolute coordinates to camera coordinates
     // - threads?
 
@@ -46,13 +44,13 @@ int main()
     //bool square_ifLines = true;
 
     std::vector<Point_3D> pyramid = {
-        Point_3D(-12, 0,-12),
-        Point_3D( 12, 0,-12),
-        Point_3D( 12, 0, 12),
-        Point_3D(-12, 0, 12),
-        Point_3D( 0, 24, 0)
+        Point_3D(-16,-16,-16),
+        Point_3D( 16,-16,-16),
+        Point_3D( 16,-16, 16),
+        Point_3D(-16,-16, 16),
+        Point_3D( 0, 16, 0)
     };
-    Point_3D pyramid_position(0, -12, 20);
+    Point_3D pyramid_position(0, 0, 32);
     Point_3D pyramid_rotation(0, 0, 0);
     std::vector<Line_2D_Indices> pyramid_linesIndices = {
         Line_2D_Indices(0, 1),
@@ -66,10 +64,32 @@ int main()
     };
     bool pyramid_ifLines = true;
 
+    /*std::vector<Point_3D> triangle = {
+        Point_3D(-16,-16,-16),
+        Point_3D( 16,-16,-16),
+        Point_3D( 16,-16, 16),
+        Point_3D(-16,-16, 16),
+        Point_3D( 0, 16, 0)
+    };
+    Point_3D triangle_position(0, 0, 32);
+    Point_3D triangle_rotation(0, 0, 0);
+    std::vector<Line_2D_Indices> triangle_linesIndices = {
+        Line_2D_Indices(0, 1),
+        Line_2D_Indices(1, 2),
+        Line_2D_Indices(2, 3),
+        Line_2D_Indices(3, 0),
+        Line_2D_Indices(0, 4),
+        Line_2D_Indices(1, 4),
+        Line_2D_Indices(2, 4),
+        Line_2D_Indices(3, 4)
+    };
+    bool triangle_ifLines = true;*/
+
     std::vector<Object_3D> objectVector = {
         //Object_3D(square, square_position, square_rotation, square_linesIndices, square_ifLines),
-        //Box( 16, 16, 16, Point_3D(0, 0, 10), Point_3D(0, 0, 0), true),
+        //Box( 16, 16, 16, Point_3D(20, 0, 40), Point_3D(0, 0, 0), true)
         Object_3D(pyramid, pyramid_position, pyramid_rotation, pyramid_linesIndices, pyramid_ifLines)
+        //Object_3D(triangle, triangle_position, triangle_rotation, triangle_linesIndices, triangle_ifLines)
         // boxes (width, height, depth, position, rotation, ifLines?)
         //Box( 8,  8, 8, Point_3D(-24, -10, 10), Point_3D(0, 0, 125), false),
         //Box(16, 16, 16, Point_3D(  0,   0, 20), Point_3D(0, 0, 35), false)

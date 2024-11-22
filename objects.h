@@ -85,7 +85,8 @@ protected:
     std::vector<Point_3D> points;
     std::vector<Line_2D_Indices> linesIndices;
 public:
-    Object_3D(std::vector<Point_3D> points = {}, Point_3D position = Point_3D(0, 0, 0), Point_3D rotation = Point_3D(0, 0, 0), std::vector<Line_2D_Indices> linesIndices = {}, bool ifLines = true) : points(points), position(position), rotation(rotation), linesIndices(linesIndices), ifLines(ifLines) {}
+    Object_3D(std::vector<Point_3D> points = {}, Point_3D position = Point_3D(0, 0, 0), Point_3D rotation = Point_3D(0, 0, 0), std::vector<Line_2D_Indices> linesIndices = {}, bool ifLines = true)
+        : points(points), position(position), rotation(rotation), linesIndices(linesIndices), ifLines(ifLines) {}
 
     Point_3D getPosition()
     {
