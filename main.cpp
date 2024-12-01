@@ -9,11 +9,10 @@ int main()
     PRINT("My shot at perspective projection of 3D points to a 2D screen\n\n");
 
     //  TODO:
-    // - check if rotates correctly (it doesn'n)
-    // - print position and rotation (done)
-    // - move methods from .h to .cpp files
+    // - move methods from .h to .cpp files (done)
     // - not displaying negative z
     // - read objects from a file
+    // - make proper rotation using vectors
     // - absolute coordinates to camera coordinates
     // - threads?
 
