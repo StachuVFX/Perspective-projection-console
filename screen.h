@@ -59,13 +59,15 @@ public:
     //  draw a horizontal line
     void draw_line_vertical(const Vertical_Line& line, const char& character);
 
-    //  draw lines, each between 2 points
-    void draw_lines(const std::vector<Line_2D>& lines_2d);
+    //  draw 2d lines, each between 2 points
+    void draw_lines_2d(const std::vector<Line_2D>& lines_2d);
+    //  draw 3d lines, each between 2 points
+    void draw_lines_3d(const std::vector<Line_3D>& lines_3d);
     //  draw normalized 2d points (with console character width correction)
     void draw_points_2d(const std::vector<Point_2D>& points_2d, const char& character);
-    //  project 3d points to 2d and draw them (with lines)
-    void draw_points_3d(const std::vector<Point_3D>& points_3d, const std::vector<Line_2D_Indices>& linesIndices);
-    //  draw all objects
+    //  project 3d points to 2d and draw them (without lines, cutting negative z)
+    void draw_points_3d(const std::vector<Point_3D>& points_3d, char linesChar);
+    //  draw all objects (cutting negative z)
     void draw();
 
     //  display screen

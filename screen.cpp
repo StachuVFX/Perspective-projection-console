@@ -160,8 +160,8 @@ void Screen::draw_line_vertical(const Vertical_Line& line, const char& character
     }
 }
 
-//  draw lines, each between 2 points
-void Screen::draw_lines(const std::vector<Line_2D>& lines_2d)
+//  draw 2d lines, each between 2 points
+void Screen::draw_lines_2d(const std::vector<Line_2D>& lines_2d)
 {
     double lineWidth, lineHeight, lineLength;
     double x, y;
@@ -182,6 +182,30 @@ void Screen::draw_lines(const std::vector<Line_2D>& lines_2d)
     }
     draw_points_2d(points_2d, m_linesChar);
 }
+//  draw 3d lines, each between 2 points
+void Screen::draw_lines_3d(const std::vector<Line_3D>& lines_3d)
+{
+    double lineWidth, lineHeight, lineDepth, lineLength;
+    double x, y, z;
+    Point_3D tmp_point_3d;
+    std::vector<Point_3D> points_3d;
+    for (int i = 0; i < lines_3d.size(); i++)
+    {
+        lineWidth = lines_3d[i].point_1.x - lines_3d[i].point_2.x;
+        lineHeight = lines_3d[i].point_1.y - lines_3d[i].point_2.y;
+        lineDepth = lines_3d[i].point_1.z - lines_3d[i].point_2.z;
+        lineLength = abs(lineWidth) > abs(lineHeight) && abs(lineWidth) > abs(lineDepth) ? abs(lineWidth) : abs(lineHeight) > abs(lineDepth) ? abs(lineHeight) : abs(lineDepth);
+        for (int j = 0; j < lineLength; j++)
+        {
+            x = lines_3d[i].point_1.x - j * lineWidth / ONE_IF_ZERO(lineLength);
+            y = lines_3d[i].point_1.y - j * lineHeight / ONE_IF_ZERO(lineLength);
+            z = lines_3d[i].point_1.z - j * lineDepth / ONE_IF_ZERO(lineLength);
+            tmp_point_3d = Point_3D(x, y, z);
+            points_3d.push_back(tmp_point_3d);
+        }
+    }
+    draw_points_3d(points_3d, m_linesChar);
+}
 //  draw normalized 2d points (with console character width correction)
 void Screen::draw_points_2d(const std::vector<Point_2D>& points_2d, const char& character)
 {
@@ -197,34 +221,29 @@ void Screen::draw_points_2d(const std::vector<Point_2D>& points_2d, const char& 
         }
     }
 }
-//  project 3d points to 2d and draw them (with lines)
-void Screen::draw_points_3d(const std::vector<Point_3D>& points_3d, const std::vector<Line_2D_Indices>& linesIndices)
+//  project 3d points to 2d and draw them (without lines, cutting negative z)
+void Screen::draw_points_3d(const std::vector<Point_3D>& points_3d, char pointsChar)
 {
     Point_2D tmp_point_2d;
     std::vector<Point_2D> points_2d;
-    std::vector<Line_2D> lines_2d;
     for (int i = 0; i < points_3d.size(); i++)
     {
-        // my projection formula derived from the slope-intercept line formula
-        tmp_point_2d.x = (-zV * points_3d[i].x) / (points_3d[i].z - zV);
-        tmp_point_2d.y = (-zV * points_3d[i].y) / (points_3d[i].z - zV);
-        points_2d.push_back(tmp_point_2d);
+        if (points_3d[i].z > 0)
+        {
+            // my projection formula derived from the slope-intercept line formula
+            tmp_point_2d.x = (-zV * points_3d[i].x) / (points_3d[i].z - zV);
+            tmp_point_2d.y = (-zV * points_3d[i].y) / (points_3d[i].z - zV);
+            points_2d.push_back(tmp_point_2d);
+        }
     }
-
-    // creating lines from indices
-    for (int i = 0; i < linesIndices.size(); i++)
-    {
-        lines_2d.push_back(Line_2D(points_2d[linesIndices[i].point_1], points_2d[linesIndices[i].point_2]));
-    }
-
-    draw_lines(lines_2d);
-    draw_points_2d(points_2d, m_pointsChar);
+    draw_points_2d(points_2d, pointsChar);
 }
-//  draw all objects
+//  draw all objects (cutting negative z)
 void Screen::draw()
 {
     std::vector<Point_3D> all_points_3d;
     std::vector<Line_2D_Indices> all_linesIndices;
+    std::vector<Line_3D> all_lines_3d;
     std::vector<Point_3D> tmp_points_3d;
     std::vector<Line_2D_Indices> tmp_linesIndices;
     for (int i = 0; i < m_objects.size(); i++)
@@ -240,7 +259,15 @@ void Screen::draw()
             all_points_3d.push_back(tmp_points_3d[j]);
         }
     }
-    draw_points_3d(all_points_3d, all_linesIndices);
+
+    // creating lines from indices
+    for (int i = 0; i < all_linesIndices.size(); i++)
+    {
+        all_lines_3d.push_back(Line_3D(all_points_3d[all_linesIndices[i].point_1], all_points_3d[all_linesIndices[i].point_2]));
+    }
+
+    draw_lines_3d(all_lines_3d);
+    draw_points_3d(all_points_3d, m_pointsChar);
 }
 
 //  display screen
