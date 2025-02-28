@@ -1,0 +1,41 @@
+#template
+[object_number]
+"model:"
+    [model_name]
+"name:"
+    [object_name]
+"values:"
+    "scale:"
+        [scale]
+    "position:"
+        [X], [Y], [Z]
+    "rotation:"
+        [x], [y], [z]
+
+
+0
+model:
+    cube
+name:
+    cube_1
+values:
+    scale:
+        10
+    position:
+        -12, 0, 30
+    rotation:
+        0, 0, 0
+
+
+1
+model:
+    pyramid
+name:
+    pyramid_1
+values:
+    scale:
+        10
+    position:
+        12, 0, 30
+    rotation:
+        0, 0, 0
